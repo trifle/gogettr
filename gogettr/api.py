@@ -17,6 +17,12 @@ USER_AGENT = (
 )
 
 
+proxies = {
+    'http': 'http://localhost:8080',
+    'https': 'http://localhost:8080',
+}
+
+
 class ApiClient:
     """A standard and safe way to interact with the GETTR API. Catches errors, supports
     retries, etc."""
@@ -54,6 +60,8 @@ class ApiClient:
                     params=params,
                     timeout=10,
                     headers={"User-Agent": USER_AGENT},
+                    proxies=proxies,
+                    verify=False
                 )
             except ReadTimeout as err:
                 handle_error({"timeout": err})
@@ -68,7 +76,8 @@ class ApiClient:
                 handle_error({"status_code": resp.status_code})
                 continue
 
-            logging.debug("GET %s with params %s yielded %s", url, params, resp.content)
+            logging.debug("GET %s with params %s yielded %s",
+                          url, params, resp.content)
 
             data = resp.json()
             if key in data:
@@ -85,7 +94,8 @@ class ApiClient:
         offset_param: str = "offset",
         offset_start: int = 0,
         offset_step: int = 20,
-        result_count_func: Callable[[dict], int] = lambda k: len(k["data"]["list"]),
+        result_count_func: Callable[[dict],
+                                    int] = lambda k: len(k["data"]["list"]),
         **kwargs
     ) -> Iterator[dict]:
         """Paginates requests to the given API endpoint."""
