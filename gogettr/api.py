@@ -11,6 +11,10 @@ from requests.exceptions import ReadTimeout
 
 from gogettr.errors import GettrApiError
 
+import urllib3
+
+urllib3.disable_warnings()
+
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
